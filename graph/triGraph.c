@@ -32,6 +32,9 @@ void initDraw(){
 		vlist[i].x=CART_X_TO_GRAPH_X(vlist[i].x);
 		vlist[i].y=CART_Y_TO_GRAPH_Y(vlist[i].y);
 	}
+	cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND); 
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+	cairo_set_line_width(cr, GRAPH_WIDTH/100.0);
 }
 void finishDraw(){
 	cairo_show_page(cr);
@@ -47,14 +50,18 @@ void drawTri(int a,int b,int c){
 	static int currentColor=0;
 	cairo_set_source_rgb (cr, pallet[currentColor][0]/255.0, pallet[currentColor][1]/255.0, pallet[currentColor][2]/255.0); 
 	currentColor=(currentColor+1)%palletSize;
-
 	cairo_move_to(cr,vlist[a].x,vlist[a].y);
 	cairo_line_to(cr,vlist[b].x,vlist[b].y);
 	cairo_line_to(cr,vlist[c].x,vlist[c].y);
-
 	cairo_close_path(cr);
-
 	cairo_fill(cr);
+
+	cairo_set_source_rgb (cr, 0, 0, 0);
+	cairo_move_to(cr,vlist[a].x,vlist[a].y);
+	cairo_line_to(cr,vlist[b].x,vlist[b].y);
+	cairo_line_to(cr,vlist[c].x,vlist[c].y);
+	cairo_close_path(cr);
+	cairo_stroke(cr);
 }
 
 int main(int argc, const char *argv[])

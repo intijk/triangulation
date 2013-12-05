@@ -12,6 +12,7 @@ typedef struct vertex{
 vertex *vlist;
 int N;
 double *dpstatus;
+int *dpind;
 typedef struct adjNode{
 	int n;
 	struct adjNode *next;
@@ -70,10 +71,17 @@ void setdps(int s,int n,double mindis){
 		exit(-1);
 	}
 }
+void setdpind(int s, int n, int mini){
+	dpind[s*(N+1)+n]=mini;
+}
+int getdpind(int s, int n){
+	return dpind[s*(N+1)+n];
+}
+
 double dp(int s, int n){
 	if(n<=3)return 0;
 	double mindis=DBL_MAX;
-	int minind=-1;
+	int mini=-1;
 	if(dps(s,n)>0.0000001){
 		return dps(s,n);
 	}
@@ -81,19 +89,28 @@ double dp(int s, int n){
 	for(k=1;k<=n-2;k++){
 		double currentdis=cdis(s,(s+k)%N)+cdis((s+k)%N,(s+n-1)%N)+dp(s,k+1)+dp((s+k)%N,n-k);
 		if(mindis>currentdis){
-			minind=k;
+			mini=k;
 			mindis=currentdis;
 		}
 	}
-	recordEdge(s,(s+minind)%N);
-	recordEdge((s+minind)%N,(s+n-1)%N);
+	setdpind(s,n,mini);
 	setdps(s,n,mindis);
 	return mindis;
+}
+void recurRecordEdge(int s,int n){
+	printf("s=%d n=%d\n", s, n);
+	if(n<=3)return ;
+	int mini=getdpind(s,n);
+	recordEdge(s, (s+mini)%N);
+	recordEdge((s+mini)%N, (s+n-1)%N);
+
+	recurRecordEdge(s,mini+1);
+	recurRecordEdge((s+mini)%N, n-mini);
 }
 int compf(const void *p1, const void *p2){
 	return (*((int*)p1))-(*((int*)p2));
 }
-outputEdge()
+void outputEdge()
 {
 	FILE *fp=fopen("edgeList.txt","w");
 	fprintf(fp, "%d\n", N);
@@ -161,8 +178,13 @@ int main(int argc, const char *argv[])
 		recordEdge(i,(i+1)%N);
 	}
 	dpstatus=(double*)malloc(sizeof(double)*(N+1)*N);
+	dpind=(int*)malloc(sizeof(int)*(N+1)*N);
 	memset(dpstatus,0,sizeof(double)*(N+1)*N);
+	memset(dpind,0,sizeof(int)*(N+1)*N);
 	printf("%f\n",dp(0, N));
+
+	recurRecordEdge(0,N);	
+
 	outputEdge();
 	fclose(fp);
 

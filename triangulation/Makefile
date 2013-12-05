@@ -5,7 +5,7 @@ CFLAGS=
 LDFLAGS=-lm
 
 tri:$(objects)
-	$(LD) -o tri $(LDFLAGS) $(objects)
+	$(LD) -o tri $(objects) $(LDFLAGS)
 
 clean:
 	rm -rf tri $(objects)

@@ -112,8 +112,7 @@ int compf(const void *p1, const void *p2){
 }
 void outputEdge()
 {
-	FILE *fp=fopen("edgeList.txt","w");
-	fprintf(fp, "%d\n", N);
+	printf("%d\n", N);
 	int *sortSpace=(int*)malloc(sizeof(int)*N);
 	adjNode *npt;
 	int i,j,c;
@@ -125,32 +124,26 @@ void outputEdge()
 			npt=npt->next;
 		}
 		qsort(sortSpace,c,sizeof(int),compf);
-		fprintf(fp,"%f %f ", vlist[i].x,vlist[i].y);
-		fprintf(fp,"%d%s",c,c==0?"\n":" ");
+		printf("%f %f ", vlist[i].x,vlist[i].y);
+		printf("%d%s",c,c==0?"\n":" ");
 		for(j=0;j<c;j++){
-			fprintf(fp,"%d%s",sortSpace[j], j==c-1?"\n":" "); 
+			printf("%d%s",sortSpace[j], j==c-1?"\n":" "); 
 		}
 	}
-	fclose(fp);
 }
 int main(int argc, const char *argv[])
 {
 	double x,y;
-	FILE *fp=fopen("input.txt","r");   
-	if(fp==NULL){
-		printf("input.txt not exsit.\n");
-		exit(-1);	
-	}
 
 	vertex *last;
-	fscanf(fp, "%lf%lf", &x,&y);
+	scanf("%lf%lf", &x,&y);
 	last=vlist=(vertex*)malloc(sizeof(vertex));
 	vlist->x=x;
 	vlist->y=y;
 	vlist->next=NULL;
 	N=1;
 
-	while(fscanf(fp, "%lf%lf", &x,&y)==2){
+	while(scanf("%lf%lf", &x,&y)==2){
 		vertex *v=(vertex*)malloc(sizeof(vertex));
 		v->x=x,v->y=y;
 		v->next=NULL;
@@ -186,7 +179,6 @@ int main(int argc, const char *argv[])
 	recurRecordEdge(0,N);	
 
 	outputEdge();
-	fclose(fp);
 
 	return 0;
 }

@@ -34,7 +34,7 @@ void initDraw(){
 	}
 	cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND); 
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-	cairo_set_line_width(cr, GRAPH_WIDTH/100.0);
+	cairo_set_line_width(cr, GRAPH_WIDTH/1000.0);
 }
 void finishDraw(){
 	cairo_show_page(cr);

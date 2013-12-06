@@ -25,7 +25,7 @@ void initDraw(){
 	sizex=(maxx-minx)*SCALE;
 	sizey=(maxy-miny)*SCALE;
 	GraphHeight=GRAPH_WIDTH*sizey/sizex;
-	cs=cairo_pdf_surface_create("triangulation.pdf", GRAPH_WIDTH, GraphHeight);
+	cs=cairo_pdf_surface_create("hull.pdf", GRAPH_WIDTH, GraphHeight);
 	cr=cairo_create(cs);
 	int i;
 	for(i=0;i<N;i++){
@@ -43,7 +43,12 @@ void finishDraw(){
 	cairo_surface_destroy(cs);
 }
 
-
+void drawLine(int a, int b){
+	cairo_set_source_rgb (cr, 0, 0, 0);
+	cairo_move_to(cr,vlist[a].x,vlist[a].y);
+	cairo_line_to(cr,vlist[b].x,vlist[b].y);
+	cairo_stroke(cr);
+}
 void drawTri(int a,int b,int c){
 	printf("draw triangulor on: %d %d %d (%f,%f)(%f,%f)(%f,%f)\n", 
 			a,b,c,vlist[a].x,vlist[a].y,vlist[b].x,vlist[b].y,vlist[c].x,vlist[c].y);
@@ -66,44 +71,27 @@ void drawTri(int a,int b,int c){
 
 int main(int argc, const char *argv[])
 {
-	FILE *fp=fopen("edgeList.txt","r");	
-	fscanf(fp, "%d", &N);
-	vlist=(vertex*)malloc(sizeof(vertex)*N);
+	vlist=(vertex*)malloc(sizeof(vertex));
 	maxx=DBL_MIN, maxy=DBL_MIN, minx=DBL_MAX, miny=DBL_MAX;
 	double x,y;
 	int i,j,n,p;
-	printf("N=%d\n", N);
-	while(scanf(p,"%lf%lf", &x, &y)==2){
-		printf("x=%f y=%f n=%d\n", x , y, n);
+	while(scanf("%lf%lf", &x, &y)==2){
+		printf("x=%f y=%f\n", x , y);
 		maxx=max(x,maxx);
 		minx=min(x,minx);
 		maxy=max(y,maxy);
 		miny=min(y,miny);
-
-		vlist[i].x=x;
-		vlist[i].y=y;
-		for(j=0;j<n;j++){
-			fscanf(fp,"%d", &p);
-		}
+		N++;
+		
+		vlist=realloc(vlist,sizeof(vertex)*N);
+		vlist[N-1].x=x;
+		vlist[N-1].y=y;
 	}
 	printf("minx=%f miny=%f maxx=%f maxy=%f\n", minx, miny, maxx, maxy);
 
 	initDraw();
-	fseek(fp,0,SEEK_SET);
-	fscanf(fp,"%d",&N);
 	for(i=0;i<N;i++){
-		fscanf(fp,"%lf%lf%d", &x, &y, &n);
-		int p1=-1,p2=-1;
-		for(j=0;j<n;j++){
-			fscanf(fp,"%d",&p);
-			if(p>i){
-				p1=p2;
-				p2=p;
-			}
-			if(p1>i){
-				drawTri(i,p1,p2);
-			}
-		}
+		drawLine(i, (i+1)%N);		
 	}
 	finishDraw();
 	return 0;

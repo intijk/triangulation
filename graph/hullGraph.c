@@ -3,7 +3,7 @@
 #include <malloc.h>
 #include <cairo.h>
 #include <cairo-pdf.h>
-#include <colorschema.h>
+#include "colorschema.h"
 #define max(a,b) ((a) > (b)? (a) : (b))
 #define min(a,b) ((a) < (b)? (a) : (b))
 #define SCALE (1.2)
